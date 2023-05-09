@@ -58,4 +58,4 @@ jobs:
       - name: Jest testing
         run: |
           npm install --save-dev jest
-          npm run test
+          npm test
