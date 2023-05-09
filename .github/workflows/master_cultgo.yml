@@ -32,6 +32,8 @@ jobs:
         with:
           name: node-app
           path: .
+          exclude: |
+            node_modules
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,6 +47,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: node-app
+          exclude: |
+            node_modules
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
