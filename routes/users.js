@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const swaggerUi = require('swagger-ui-dist');
 
 /* GET users listing. */
 router.use('/api-docs', express.static(swaggerUi.getAbsoluteFSPath()));
