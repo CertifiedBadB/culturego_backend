@@ -54,7 +54,7 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_55472C96F51C4CA690CAB76418D7865D }}
           package: .
-
+  test:
       - name: Jest testing
         run: |
           npm install --save-dev jest
