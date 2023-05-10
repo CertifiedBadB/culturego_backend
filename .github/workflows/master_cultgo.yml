@@ -59,6 +59,22 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_55472C96F51C4CA690CAB76418D7865D }}
           package: .
+    
+    coverage:
+        permissions:
+            checks: write
+            pull-requests: write
+            contents: write
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+            - uses: jwalton/gh-find-current-pr@v1
+                id: findPr
+            - uses: ArtiomTr/jest-coverage-report-action@v2
+                with:
+                   prnumber: ${{ steps.findPr.outputs.number }}
+
+
           
 
           
