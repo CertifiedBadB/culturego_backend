@@ -1,6 +1,6 @@
 name: 'coverage'
 on:
-    push_request:
+    pull_request:
         branches:
             - master
 jobs:
