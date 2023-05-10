@@ -59,3 +59,18 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_55472C96F51C4CA690CAB76418D7865D }}
           package: .
+          
+    name: 'coverage'
+    on:
+        pull_request:
+            branches:
+                - master
+                - main
+    jobs:
+        coverage:
+            runs-on: ubuntu-latest
+            steps:
+                - uses: actions/checkout@v3
+                - uses: ArtiomTr/jest-coverage-report-action@v2
+
+    
