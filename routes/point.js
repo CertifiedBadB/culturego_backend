@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 const pointController = require("../controllers/pointController");
-const authorizr = require("../routes")
+const authorize = require("../routes")
 router.post('/', pointController.point_post);
 const app = express();
 

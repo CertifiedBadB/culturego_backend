@@ -22,6 +22,26 @@ module.exports.path_get = async(req, res) => {
     const path = await Path.find();
     res.json(path);
 }
+
+module.exports.addPoint = async(req, res) => {
+  const pathId = req.body.pathId;
+  const point = req.body.point;
+  const point1 = await Point.create({
+    description: point.description,
+    location: point.location,
+    value:point.value,
+    question:point.question,
+    photo:point.photo
+  });
+  const path =  await Path.findByIdAndUpdate(pathId,{$push:point1},
+    {safe: true, upsert: true},
+    function(err, path) {
+    console.log(err);
+});
+
+  res.json(path);
+}
+
 module.exports.path_delete = async(req, res) => {
     const retPath = await Path.findById(req.body.id);
     await Path.deleteOne({_id: req.body.id});
