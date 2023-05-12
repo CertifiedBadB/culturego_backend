@@ -118,6 +118,6 @@ router.delete('/delete', pathController.path_delete);
 router.post('/dummydata', pathController.createDummyData);
 
 
-router.post('/dummydata', pathController.addPoint);
+router.post('/pushpoint', pathController.addPoint);
 
 module.exports = router;
