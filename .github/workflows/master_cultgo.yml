@@ -6,7 +6,7 @@ name: build, deploy, test and cover Node.js app to Azure Web App - cultGo
 on:
   push:
     branches:
-      - master
+      - pathController
   workflow_dispatch:
 
 jobs:
