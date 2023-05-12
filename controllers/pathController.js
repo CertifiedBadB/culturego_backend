@@ -33,7 +33,7 @@ module.exports.addPoint = async(req, res) => {
     question:point.question,
     photo:point.photo
   });
-  const path =  await Path.findByIdAndUpdate(pathId,{$push:point1},
+  const path =  await Path.findByIdAndUpdate(pathId,{$push : { points:point1 }},
     {safe: true, upsert: true},
     function(err, path) {
     console.log(err);

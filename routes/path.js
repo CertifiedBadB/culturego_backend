@@ -117,4 +117,7 @@ router.delete('/delete', pathController.path_delete);
  */
 router.post('/dummydata', pathController.createDummyData);
 
+
+router.post('/dummydata', pathController.addPoint);
+
 module.exports = router;
