@@ -3,11 +3,16 @@ const Point = require ('../model/Point');
 const PointController = require('./pointController');
 
 module.exports.path_post = async(req, res) => {
+      const arrayOfPoints =[];
+  await req.body.points.forEach(point => {
+      const p = Point.create(point);
+      arrayOfPoints = arrayOfPoints + p;
+    });
     const path = await Path.create({
         title: req.body.title, 
         description: req.body.description,
         photo:req.body.photo,
-        points:req.body.points,
+        points:arrayOfPoints,
         location:req.body.location
     });
     try {
