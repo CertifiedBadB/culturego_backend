@@ -34,12 +34,26 @@ module.exports.addPoint = async(req, res) => {
     photo:point.photo
   });
   const path =  await Path.findByIdAndUpdate(pathId,{$push : { points:point1 }},
-    {safe: true, upsert: true},
-    function(err, path) {
-    console.log(err);
-});
+    {safe: true, upsert: true})
+    try {
+      await path.save();
+      res.send(path);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+}
 
-  res.json(path);
+module.exports.deletePoint = async(req, res) => {
+  const pathId = req.body.pathId;
+  const pointId = req.body.pointId;
+  const point = await Point.findByIdAndDelete(pointId);
+  const path =  await Path.findByIdAndUpdate(pathId,{$pop : { points:point }},
+    {safe: true, upsert: true})
+  try {
+    res.send(path);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 }
 
 module.exports.path_delete = async(req, res) => {

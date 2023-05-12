@@ -12,7 +12,7 @@ const MultiplayerSchema = mongoose.Schema({
     }],
     collectedPointsInPath:[{
         path: {type: mongoose.Schema.Types.ObjectId, ref: 'Path', required: true},
-        point:[{type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true}]
+        points:[{type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true}]
     }],
 })
 
