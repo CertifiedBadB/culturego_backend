@@ -145,7 +145,7 @@ router.post('/dummydata', pathController.createDummyData);
  *        - paths (needs autorization)
  *      summary: Use this call to post a point into a path
  *      security:
- *        - [{ "token": [] }]
+ *          - Bearer: []
  *      requestBody:
  *          required: true
  *          content:
