@@ -12,28 +12,37 @@ const swaggerUI = require('swagger-ui-express');
 /**
  * @swagger
  * /users/signup:
- *   post:
+ *  post:
  *      tags:
  *        - users (authorization)
- *     summary: Create a new user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       201:
- *         description: User created
- *       500:
- *         description: Internal server error
+ *      summary: Use this call to log in CultureGo users this authorizes locked calls
+ *      description: The body needs an email and a password
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                              description: Email of the user
+ *                              example: "user@example.com"
+ *                              required: true
+ *                          password:
+ *                              type: string
+ *                              description: Password of the user
+ *                              example: "password123"
+ *                              required: true
+ *
+ *      responses:
+ *          200:
+ *              description: Successful login
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              description: Unauthorized
  */
-
 router.post('/signup', userController.signup_post);
 
 /**

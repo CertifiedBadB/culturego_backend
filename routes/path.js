@@ -128,7 +128,7 @@ router.delete('/delete', pathController.path_delete);
  *        - paths (needs autorization)
  *      summary: Use this call to add some dummydata to the database
  *      security:
- *        - [{ "Bearer": [] }]
+ *        - bearerAuth: []
  *      requestBody:
  *          required: false
  *      responses:
@@ -143,7 +143,7 @@ router.post('/dummydata', pathController.createDummyData);
 
 /** 
  * @swagger
- *  /paths/pushPoint:
+ *  /paths/pushpoint:
  *  post:
  *      tags:
  *        - paths (needs autorization)
@@ -166,12 +166,12 @@ router.post('/dummydata', pathController.createDummyData);
  *                              type: Point
  *                              description: a point
  *                              example: {
- *    "description": "Hotel de Draak (vroeger De Draeck) is een hotel gelegen aan de Grote Markt in Bergen op Zoom. Het is het oudste hotel van Nederland.Het huidige Hotel de Draak, aan de Grote Markt 38, is gevestigd in een pand uit 1397 dat het resultaat is van een ingrijpende verbouwing. De met tongewelven overdekte kelders stammen nog uit het 14e-eeuwse pand.",
- *    "location":{"coordinates": [51.49458617537634, 4.286523179756908]},
- *    "value":1,
- *    "question":{"question" : "Hier de vraag ? ","photo":"photoUrl","badAnswers":["a","b"],"goodAnswer":"c","value":1},
- *    "photo": "https://i.pinimg.com/736x/7a/60/cb/7a60cb463e52b7173817f4373b099aab--bergen-zoom.jpg"
- * }
+ *                                  "description": "Hotel de Draak (vroeger De Draeck) is een hotel gelegen aan de Grote Markt in Bergen op Zoom. Het is het oudste hotel van Nederland.Het huidige Hotel de Draak, aan de Grote Markt 38, is gevestigd in een pand uit 1397 dat het resultaat is van een ingrijpende verbouwing. De met tongewelven overdekte kelders stammen nog uit het 14e-eeuwse pand.",
+ *                                  "location":{"coordinates": [51.49458617537634, 4.286523179756908]},
+ *                                  "value":1,
+ *                                  "question":{"question" : "Hier de vraag ? ","photo":"photoUrl","badAnswers":["a","b"],"goodAnswer":"c","value":1},
+ *                                  "photo": "https://i.pinimg.com/736x/7a/60/cb/7a60cb463e52b7173817f4373b099aab--bergen-zoom.jpg"
+ *                              }
  *                              required: true
  *      responses:
  *          200:
