@@ -8,15 +8,6 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
 
-/**
- *
- * @swagger
- *  components:
- *      securitySchemes:
- *          bearerAuth:           
- *             type: http
- *             scheme: bearer
- **/
 
 /**
  * @swagger
@@ -70,8 +61,7 @@ router.post('/signup', userController.signup_post);
  *                              description: Password of the user
  *                              example: "password123"
  *                              required: true
- *      security:
- *           - bearerAuth: []  
+ *
  *      responses:
  *          200:
  *              description: Successful login
