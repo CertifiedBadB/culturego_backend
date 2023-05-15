@@ -26,7 +26,7 @@ module.exports.path_post = async(req, res) => {
   }
           
 module.exports.path_get = async(req, res) => {
-    const path = await Path.find();
+    const path = await Path.find().populate;
     res.json(path);
 }
 
