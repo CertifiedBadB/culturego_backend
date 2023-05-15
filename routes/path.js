@@ -13,7 +13,7 @@ const swaggerUI = require('swagger-ui-express');
  *          scheme: bearer
  * 
  * @swagger
- *  /paths:
+ *  /paths/post:
  *  post:
  *      tags:
  *        - paths (needs autorization)
@@ -60,8 +60,32 @@ const swaggerUI = require('swagger-ui-express');
  *          401:
  *              description: Unauthorized
  */
-router.post('/', pathController.path_post);
-router.get('/', pathController.path_get);
+router.post('/post', pathController.path_post);
+
+/** 
+ * @swagger
+ *  /paths/get:
+ *  get:
+ *      tags:
+ *        - paths (needs autorization)
+ *      summary: Use this call to post a path
+ *      security:
+ *        - bearerAuth: []
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *      responses:
+ *          200:
+ *              description: Successful deleted a path
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              description: Unauthorized
+ */
+router.get('/get', pathController.path_get);
 
 
 
@@ -117,7 +141,46 @@ router.delete('/delete', pathController.path_delete);
  */
 router.post('/dummydata', pathController.createDummyData);
 
-
+/** 
+ * @swagger
+ *  /paths/pushPoint:
+ *  post:
+ *      tags:
+ *        - paths (needs autorization)
+ *      summary: Use this call to post a path
+ *      security:
+ *        - bearerAuth: []
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          pathId:
+ *                              type: String
+ *                              description: id of path
+ *                              example: "dsfigdish4regfrt79ytf"
+ *                              required: true
+ *                          point:
+ *                              type: Point
+ *                              description: a point
+ *                              example: {
+ *    "description": "Hotel de Draak (vroeger De Draeck) is een hotel gelegen aan de Grote Markt in Bergen op Zoom. Het is het oudste hotel van Nederland.Het huidige Hotel de Draak, aan de Grote Markt 38, is gevestigd in een pand uit 1397 dat het resultaat is van een ingrijpende verbouwing. De met tongewelven overdekte kelders stammen nog uit het 14e-eeuwse pand.",
+ *    "location":{"coordinates": [51.49458617537634, 4.286523179756908]},
+ *    "value":1,
+ *    "question":{"question" : "Hier de vraag ? ","photo":"photoUrl","badAnswers":["a","b"],"goodAnswer":"c","value":1},
+ *    "photo": "https://i.pinimg.com/736x/7a/60/cb/7a60cb463e52b7173817f4373b099aab--bergen-zoom.jpg"
+ * }
+ *                              required: true
+ *      responses:
+ *          200:
+ *              description: Successful deleted a path
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              description: Unauthorized
+ */
 router.post('/pushpoint', pathController.addPoint);
 
 router.delete('/removePoint', pathController.deletePoint);
