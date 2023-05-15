@@ -68,9 +68,11 @@ router.post('/post', pathController.path_post);
  *  get:
  *      tags:
  *        - paths (needs autorization)
- *      summary: Use this call to post a path
+ *      summary: Use this call to get all paths
  *      security:
  *        - bearerAuth: []
+ *      requestBody:
+ *          required: false
  *      responses:
  *          200:
  *              description: Successful deleted a path
@@ -141,7 +143,7 @@ router.post('/dummydata', pathController.createDummyData);
  *  post:
  *      tags:
  *        - paths (needs autorization)
- *      summary: Use this call to post a path
+ *      summary: Use this call to post a point into a path
  *      security:
  *        - bearerAuth: []
  *      requestBody:
