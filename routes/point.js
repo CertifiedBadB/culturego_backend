@@ -10,7 +10,7 @@ const app = express();
 /** 
  * @swagger
  *  /points/generateRandomPath:
- *  get:
+ *  post:
  *      tags:
  *        - points (needs autorization)
  *      summary: Use this call to get value amount of points, based on your location in latitude and longtitude
@@ -47,7 +47,7 @@ const app = express();
  *              description: Unauthorized
  */
 
-router.get('/generateRandomPath', pointController.point_get);
+router.post('/generateRandomPath', pointController.point_get);
 
 
 /**
@@ -61,7 +61,7 @@ router.get('/generateRandomPath', pointController.point_get);
  *          required: false
  *
  *      security:
- *         - bearerAuth: []
+ *        - [{ "Bearer": [] }]
  *      responses:
  *          200:
  *              description: Successful get points
