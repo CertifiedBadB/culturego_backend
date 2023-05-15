@@ -19,7 +19,7 @@ const swaggerUI = require('swagger-ui-express');
  *        - paths (needs autorization)
  *      summary: Use this call to post a path
  *      security:
- *        - bearerAuth: []
+ *          - Bearer: []
  *      requestBody:
  *          required: true
  *          content:
@@ -70,7 +70,7 @@ router.post('/post', pathController.path_post);
  *        - paths (needs autorization)
  *      summary: Use this call to get all paths
  *      security:
- *        - bearerAuth: []
+ *          - Bearer: []
  *      requestBody:
  *          required: false
  *      responses:
@@ -93,7 +93,7 @@ router.get('/get', pathController.path_get);
  *        - paths (needs autorization)
  *      summary: Use this call to delete a path
  *      security:
- *        - bearerAuth: []
+ *          - Bearer: []
  *      requestBody:
  *          required: true
  *          content:
@@ -124,7 +124,7 @@ router.delete('/delete', pathController.path_delete);
  *        - paths (needs autorization)
  *      summary: Use this call to add some dummydata to the database
  *      security:
- *        - bearerAuth: []
+ *          - Bearer: []
  *      requestBody:
  *          required: false
  *      responses:

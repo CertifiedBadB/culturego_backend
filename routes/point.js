@@ -15,7 +15,7 @@ const app = express();
  *        - points (needs autorization)
  *      summary: Use this call to get value amount of points, based on your location in latitude and longtitude
  *      security:
- *        - bearerAuth: []
+ *          - Bearer: []
  *      requestBody:
  *          required: true
  *          content:
@@ -61,7 +61,7 @@ router.post('/generateRandomPath', pointController.point_get);
  *          required: false
  *
  *      security:
- *        - [{ "Bearer": [] }]
+ *          - Bearer: []
  *      responses:
  *          200:
  *              description: Successful get points
