@@ -71,12 +71,6 @@ router.post('/post', pathController.path_post);
  *      summary: Use this call to post a path
  *      security:
  *        - bearerAuth: []
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
  *      responses:
  *          200:
  *              description: Successful deleted a path
