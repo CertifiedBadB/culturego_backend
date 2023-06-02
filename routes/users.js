@@ -81,5 +81,32 @@ router.post('/signup', userController.signup_post);
  */
 router.post('/login', userController.login_post);
 
+
+/**
+ * @swagger
+ * /users/getById:
+ *  get:
+ *      tags:
+ *        - users (authorization)
+ *      summary: Use this call to get a user by id
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          id: String
+ *
+ *      responses:
+ *          200:
+ *              description: Successful login
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              description: Unauthorized
+ */
+router.get('/getById', userController.getById);
+
 router.get('/logout', userController.logout_get);
 module.exports = router;

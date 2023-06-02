@@ -62,3 +62,17 @@ module.exports.login_post = async(req, res) => {
         res.status(400).json({errors});
     }
 }
+
+module.exports.getByd = async (req, res) => {
+    const { id } = req.body;
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      return res.json(user);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };

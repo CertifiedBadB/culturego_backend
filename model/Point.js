@@ -3,6 +3,10 @@ const QuestionSchema = require("./schema/Question")
 const LocationSchema = require("./schema/Location")
 
 const PointSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
     question: {
         type: QuestionSchema,
         required: true

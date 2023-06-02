@@ -155,7 +155,7 @@ router.post('/dummydata', pathController.createDummyData);
  *                      properties:
  *                          pathId:
  *                              type: String
- *                              description: id of path
+ *                              description: String
  *                              example: "dsfigdish4regfrt79ytf"
  *                              required: true
  *                          point:
