@@ -63,7 +63,7 @@ module.exports.login_post = async(req, res) => {
     }
 }
 
-module.exports.getByd = async (req, res) => {
+module.exports.getById = async (req, res) => {
     const { id } = req.body;
     try {
       const user = await User.findById(id);
