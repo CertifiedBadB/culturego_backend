@@ -1,39 +1,43 @@
 const { signup_post, logout_get, login_post, getById, handleErrors, createToken } = require('./controllers/userController');
+const User = require('./model/User');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { MongoClient } = require('mongodb');
 
 // Create a new instance of MongoMemoryServer
 const mongod = new MongoMemoryServer();
 
-describe('User Controller', () => {
-  let connection;
-  let db;
+const handleErrors = (err) => {
+  let errors = { email: '', password: '', photo: '' };
 
-  beforeAll(async () => {
-    // Start the in-memory MongoDB server
-    const uri = await mongod.getUri();
-    connection = await MongoClient.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+  if (err.message === 'verkeerde email') {
+    errors.email = 'Ingevoerde gegevens kloppen niet.';
+  }
+  if (err.message === 'verkeerde wachtwoord') {
+    errors.email = 'Ingevoerde gegevens kloppen niet.';
+  }
+  if (err.code === 11000) {
+    errors.email = 'Dit email adres heeft al een account bij ons';
+    return errors;
+  }
+  if (err.message.includes('user validation failed')) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
     });
-    db = connection.db();
+  }
+  return errors;
+};
+
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: maxAge });
+};
+
+
+describe('User Controller', () => {
+  beforeEach(async () => {
+    // Clear the users collection before each test
+    await db.collection('users').deleteMany({});
   });
-
-  afterAll(async () => {
-    // Close the MongoDB connection and stop the in-memory server
-    await connection.close();
-    await mongod.stop();
-  });
-
-  // Rest of your test code..
-
-
-
-
-
-
-
-
 
   describe('signup_post', () => {
     it('should create a user and return the user ID', async () => {
@@ -84,7 +88,6 @@ describe('User Controller', () => {
       });
     });
   });
-
   describe('logout_get', () => {
     it('should clear the JWT cookie', () => {
       const res = {
