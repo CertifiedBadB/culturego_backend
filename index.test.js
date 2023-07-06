@@ -35,7 +35,7 @@ describe('Signup', () => {
     const req = {
       body: {
         email: 'test@example.com',
-        password: 'password',
+        password: 'pasD3!sword',
         photo: 'photo-url',
       },
     };
