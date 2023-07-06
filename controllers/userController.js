@@ -1,76 +1,243 @@
-const User = require("../model/User");
-const jwt = require('jsonwebtoken');
-const axios = require('axios');
-//handleerrors
-const handleErrors= (err) =>{
-    let errors = {email: '', password: '', photo: ''}
+const User = require('../model/User');
+const {
+  signup_post,
+  logout_get,
+  login_post,
+  getById,
+  handleErrors,
+  createToken,
+} = require('../controllers/userController');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MongoClient } = require('mongodb');
+const { setupMockMongo } = require('jest-mock-mongodb');
 
-    if (err.message === "verkeerde email"){
-        errors.email = "Ingevoerde gegevens kloppen niet."
-    }
-    if (err.message === "verkeerde wachtwoord"){
-        errors.email = "Ingevoerde gegevens kloppen niet."
-    }
-    //duplicate error code
-if(err.code === 11000){
-    errors.email = "Dit email adres heeft al een account bij ons"
-    return errors;
-}
-    //validate errors 
-    if(err.message.includes('user validation failed')) {
-        Object.values(err.errors).forEach(({properties}) =>{
-            errors[properties.path] = properties.message
-        })
-    }
-    return errors
-}
+describe('User Controller', () => {
+  let connection;
+  let db;
 
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET,{expiresIn:maxAge});
-}
+  const mongod = new MongoMemoryServer();
+
+  beforeAll(async () => {
+    await setupMockMongo(mongod);
+    const uri = await mongod.getUri();
+    connection = await MongoClient.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = await connection.db();
+  });
+
+  afterAll(async () => {
+    await connection.close();
+    await mongod.stop();
+  });
+
+  describe('signup_post', () => {
+    it('should create a user and return the user ID', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password',
+          photo: 'photo-url',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await signup_post(req, res);
+
+      const createdUser = await db.collection('users').findOne({ email: 'test@example.com' });
+
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({ user: createdUser._id.toString() });
+      expect(createdUser.email).toBe('test@example.com');
+      expect(createdUser.password).toBe('password');
+      expect(createdUser.photo).toBe('photo-url');
+    });
+
+    it('should handle errors and return error messages', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password',
+          photo: 'photo-url',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Simulate an error by passing an existing email address
+      await db.collection('users').insertOne({ email: 'test@example.com' });
+
+      await signup_post(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        email: 'Dit email adres heeft al een account bij ons',
+      });
+    });
+  });
+
+  describe('logout_get', () => {
+    it('should clear the JWT cookie', () => {
+      const res = {
+        clearCookie: jest.fn(),
+      };
+
+      logout_get({}, res);
+
+      expect(res.clearCookie).toHaveBeenCalledWith('jwt');
+    });
+  });
+
+  describe('login_post', () => {
+    it('should authenticate the user and return the user ID and token', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Create a test user
+      const createdUser = await db.collection('users').insertOne({
+        email: 'test@example.com',
+        password: 'password',
+      });
+
+      await login_post(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        user: createdUser._id.toString(),
+        token: expect.any(String),
+      });
+    });
+
+    it('should handle errors and return error messages', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'wrong-password',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await login_post(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ errors: { email: 'Ingevoerde gegevens kloppen niet.' } });
+    });
+  });
+
+  describe('getById', () => {
+    it('should return the user by ID if found', async () => {
+      // Create a test user
+      const createdUser = await db.collection('users').insertOne({
+        _id: 'test-user-id',
+        email: 'test@example.com',
+        password: 'password',
+      });
+
+      const req = {
+        body: {
+          id: 'test-user-id',
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+
+      await getById(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(createdUser.ops[0]);
+    });
+
+    it('should return an error if the user is not found', async () => {
+      const req = {
+        body: {
+          id: 'nonexistent-user-id',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await getById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ error: 'User not found' });
+    });
+
+    it('should return an error if an internal server error occurs', async () => {
+      const req = {
+        body: {
+          id: 'test-user-id',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Simulate an internal server error by passing an invalid user ID
+      await getById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+    });
+  });
+
+  describe('handleErrors', () => {
+    it('should return appropriate error messages based on the error', () => {
+      const err1 = new Error('verkeerde email');
+      const err2 = new Error('verkeerde wachtwoord');
+      const err3 = { code: 11000 };
+      const err4 = new Error('user validation failed');
+      err4.errors = {
+        email: { properties: { path: 'email', message: 'Email is required' } },
+        password: { properties: { path: 'password', message: 'Password is required' } },
+      };
+
+      const errors1 = handleErrors(err1);
+      const errors2 =Apologies again for the incomplete response. Here's the continuation of the code:
 
 
-module.exports.signup_post = async(req, res) => {
-    const {email, password, photo} = req.body;
-    try{
-        const user = await User.create({email, password, photo});
-        const token = createToken(user._id);
-        res.status(201).json({user: user._id})
-    }
-    catch(err){
-        const errors = handleErrors(err);
-        res.status(400).json(errors);
-    }
-}
+  describe('handleErrors', () => {
+    it('should return appropriate error messages based on the error', () => {
+      const err1 = new Error('verkeerde email');
+      const err2 = new Error('verkeerde wachtwoord');
+      const err3 = { code: 11000 };
+      const err4 = new Error('user validation failed');
+      err4.errors = {
+        email: { properties: { path: 'email', message: 'Email is required' } },
+        password: { properties: { path: 'password', message: 'Password is required' } },
+      };
 
-module.exports.logout_get = (req, res) => {
-    res.status('jwt','',{maxAge:1});
-}
+      const errors1 = handleErrors(err1);
+      const errors2 = handleErrors(err2);
+      const errors3 = handleErrors(err3);
+      const errors4 = handleErrors(err4);
 
-
-module.exports.login_post = async(req, res) => {
-    const {email, password} = req.body;
-    try{
-        const user = await User.login(email,password);
-        const token = createToken(user._id);
-        res.status(200).json({user:user._id , token: token});
-    }
-    catch(err){
-        const errors = handleErrors(err);
-        res.status(400).json({errors});
-    }
-}
-
-module.exports.getById = async (req, res) => {
-    const { id } = req.body;
-    try {
-      const user = await User.findById(id);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      return res.json(user);
-    } catch (err) {
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  };
+      expect(errors1).toEqual({ email: 'Ingevoerde gegevens kloppen niet.' });
+      expect(errors2).toEqual({ email: 'Ingevoerde gegevens kloppen niet.' });
+      expect(errors3).toEqual({ email: 'Dit email adres heeft al een account bij ons' });
+      expect(errors4).toEqual({
+        email: 'Email is required',
+        password: 'Password is required',
+      });
+    });
+  });
+});
