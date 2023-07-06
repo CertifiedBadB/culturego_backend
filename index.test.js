@@ -28,7 +28,7 @@ describe('insert', () => {
 });
 
 // spy on method in service
-const mockSaveProduct = jest.spyOn(UserController.signup_post, 'saveProduct')
+const mockSaveProduct = jest.spyOn(UserController.signup_post, 'res')
 // dummy product
 const mockProductObject = { email: 'dummy@dummy.nl', password: '123@12OO' };
 // result is defined in the format we return in APIs
