@@ -2,8 +2,6 @@ const { signup_post } = require('./controllers/userController');
 const { MongoClient } = require('mongodb');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
-const mongod = new MongoMemoryServer();
-
 describe('signup_post', () => {
    let connection;
    let db;
@@ -31,6 +29,24 @@ describe('signup_post', () => {
        await mongod.stop();
      }
    });
+
+   beforeEach(() => {
+    req = {
+      body: {
+        email: 'dummy@dummy.nl',
+        password: '123@12OO'
+      }
+    };
+    res = {
+      status: jest.fn(() => res),
+      json: jest.fn()
+    };
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should create a user and return a token', async () => {
     const createToken = jest.fn().mockReturnValue('dummy-token');
     const User = {
