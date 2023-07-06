@@ -1,4 +1,4 @@
-const { signup_post } = require('./userController');
+const { signup_post } = require('./controllers/userController');
 const User = require('./model/User');
 
 describe('Signup', () => {
