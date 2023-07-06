@@ -1,24 +1,26 @@
 const { signup_post } = require('./controllers/userController');
 
+const mongod = new MongoMemoryServer();
+
 describe('signup_post', () => {
+   let connection;
+  let db;
+
   let req;
   let res;
 
-  beforeEach(() => {
-    req = {
-      body: {
-        email: 'dummy@dummy.nl',
-        password: '123@12OO'
-      }
-    };
-    res = {
-      status: jest.fn(() => res),
-      json: jest.fn()
-    };
+ beforeAll(async () => {
+    const uri = await mongod.getUri();
+    connection = await MongoClient.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = await connection.db();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  afterAll(async () => {
+    await connection.close();
+    await mongod.stop();
   });
 
   it('should create a user and return a token', async () => {
