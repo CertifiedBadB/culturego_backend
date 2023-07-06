@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 //handleerrors
 const handleErrors= (err) =>{
-    console.log(err.message, err.code);
     let errors = {email: '', password: '', photo: ''}
 
     if (err.message === "verkeerde email"){
@@ -72,7 +71,6 @@ module.exports.getById = async (req, res) => {
       }
       return res.json(user);
     } catch (err) {
-      console.error(err);
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
