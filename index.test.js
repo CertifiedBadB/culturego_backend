@@ -1,45 +1,63 @@
-import request from 'supertest'
-import app from './app.js'
+const { signup_post } = require('./userController');
+const User = require('./model/User');
 
+describe('Signup', () => {
+  beforeEach(() => {
+    // Clear the user collection before each test
+    User.deleteMany({});
+  });
 
-describe("POST /users", () => {
-  describe("given a username and password", () => {
+  it('should create a new user and return the user ID', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'password',
+        photo: 'photo-url',
+      },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
 
-    test("should respond with a 200 status code", async () => {
-      const response = await request(app).post("/signup").send({
-        email: "username@email.com",
-        password: "password"
-      })
-      expect(response.statusCode).toBe(200)
-    })
-    test("should specify json in the content type header", async () => {
-      const response = await request(app).post("/signup").send({
-        email: "username@email.com",
-        password: "password"
-      })
-      expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
-    })
-    test("response has userId", async () => {
-      const response = await request(app).post("/signup").send({
-        email: "username@email.com",
-        password: "password"
-      })
-      expect(response.body.userId).toBeDefined()
-    })
-  })
+    await signup_post(req, res);
 
-  describe("when the username and password is missing", () => {
-    test("should respond with a status code of 400", async () => {
-      const bodyData = [
-        {email: "username@email.com"},
-        {password: "password"},
-        {}
-      ]
-      for (const body of bodyData) {
-        const response = await request(app).post("/signup").send(body)
-        expect(response.statusCode).toBe(400)
-      }
-    })
-  })
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ user: expect.any(String) });
 
-})
+    // Check if the user is created in the database
+    const user = await User.findOne({ email: 'test@example.com' });
+    expect(user).toBeDefined();
+    expect(user.email).toBe('test@example.com');
+    expect(user.password).toBe('password');
+    expect(user.photo).toBe('photo-url');
+  });
+
+  it('should handle errors and return error messages', async () => {
+    // Create a user with the same email to simulate duplicate error
+    await User.create({
+      email: 'test@example.com',
+      password: 'password',
+      photo: 'photo-url',
+    });
+
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'password',
+        photo: 'photo-url',
+      },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await signup_post(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      email: 'Dit email adres heeft al een account bij ons',
+    });
+  });
+});
