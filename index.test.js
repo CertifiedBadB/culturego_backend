@@ -10,12 +10,13 @@ let db;
 
 describe('User Controller', () => {
   beforeAll(async () => {
-    const uri = await mongod.getUri();
+    await mongod.start();
+    const uri = mongod.getUri();
     connection = await MongoClient.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    db = connection.db(); // Assign the connection's database to db variable
+    db = connection.db();
   });
 
   afterAll(async () => {
