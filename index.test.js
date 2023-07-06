@@ -1,7 +1,24 @@
 const { signup_post } = require('./controllers/userController');
 const User = require('./model/User');
 
+
 describe('Signup', () => {
+
+  let connection;
+  let db;
+
+  beforeAll(async () => {
+    connection = await MongoClient.connect(global.__MONGO_URI__, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = await connection.db();
+  });
+
+  afterAll(async () => {
+    await connection.close();
+  });
+
   beforeEach(() => {
     // Clear the user collection before each test
     User.deleteMany({});
@@ -34,6 +51,7 @@ describe('Signup', () => {
   }, 30000);
 
   it('should handle errors and return error messages', async () => {
+    
     // Create a user with the same email to simulate duplicate error
     await User.create({
       email: 'test@example.com',
