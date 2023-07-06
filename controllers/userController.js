@@ -38,7 +38,9 @@ module.exports.signup_post = async (req, res) => {
       const token = createToken(user._id);
       res.status(201).json({ user: user._id });
     } catch (err) {
+      console.error('Error:', err); // Add this line for logging
       const errors = handleErrors(err);
+      console.error('Errors:', errors); // Add this line for logging
       res.status(400).json(errors);
     }
   };
