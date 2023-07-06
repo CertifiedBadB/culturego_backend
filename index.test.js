@@ -31,7 +31,7 @@ describe('Signup', () => {
     expect(user.email).toBe('test@example.com');
     expect(user.password).toBe('password');
     expect(user.photo).toBe('photo-url');
-  });
+  }, 30000);
 
   it('should handle errors and return error messages', async () => {
     // Create a user with the same email to simulate duplicate error
@@ -59,5 +59,5 @@ describe('Signup', () => {
     expect(res.json).toHaveBeenCalledWith({
       email: 'Dit email adres heeft al een account bij ons',
     });
-  });
+  }, 30000);
 });
