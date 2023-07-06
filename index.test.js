@@ -1,4 +1,4 @@
-const { signup_post, logout_get, login_post, getById, handleErrors, createToken } = require('../controllers/userController');
+const { signup_post, logout_get, login_post, getById, handleErrors, createToken } = require('./controllers/userController');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { MongoClient } = require('mongodb');
 
