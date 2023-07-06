@@ -35,7 +35,7 @@ describe('Signup', () => {
     const req = {
       body: {
         email: 'test@example.com',
-        password: 'pasD3!sword',
+        password: 'passwS@123ord',
         photo: 'photo-url',
       },
     };
@@ -43,19 +43,21 @@ describe('Signup', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-
+  
     await signup_post(req, res);
-
+  
+    console.log('Response:', res); // Add this line for logging
+  
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({ user: expect.any(String) });
-
+  
     // Check if the user is created in the database
     const user = await User.findOne({ email: 'test@example.com' });
     expect(user).toBeDefined();
     expect(user.email).toBe('test@example.com');
     expect(user.password).toBe('password');
     expect(user.photo).toBe('photo-url');
-  }, 30000);
+  },3000);
 
   it('should handle errors and return error messages', async () => {
     
