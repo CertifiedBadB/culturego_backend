@@ -6,29 +6,31 @@ const mongod = new MongoMemoryServer();
 
 describe('signup_post', () => {
    let connection;
-  let db;
-
-  let req;
-  let res;
-
-beforeAll(async () => {
-    const uri = await mongod.getUri();
-    connection = await MongoClient.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    db = await connection.db();
-  });
-
-  afterAll(async () => {
-    if (connection) {
-      await connection.close();
-    }
-    if (mongod) {
-      await mongod.stop();
-    }
-  });
-
+   let db;
+ 
+   let req;
+   let res;
+ 
+   let mongod;
+ 
+   beforeAll(async () => {
+     mongod = await MongoMemoryServer.create();
+     const uri = mongod.getUri();
+     connection = await MongoClient.connect(uri, {
+       useNewUrlParser: true,
+       useUnifiedTopology: true,
+     });
+     db = connection.db();
+   });
+ 
+   afterAll(async () => {
+     if (connection) {
+       await connection.close();
+     }
+     if (mongod) {
+       await mongod.stop();
+     }
+   });
   it('should create a user and return a token', async () => {
     const createToken = jest.fn().mockReturnValue('dummy-token');
     const User = {
