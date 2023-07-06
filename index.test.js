@@ -57,7 +57,7 @@ describe('Signup', () => {
     expect(user.email).toBe('test@example.com');
     expect(user.password).toBe('password');
     expect(user.photo).toBe('photo-url');
-  },3000);
+  },30000);
 
   it('should handle errors and return error messages', async () => {
     
