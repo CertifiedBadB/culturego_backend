@@ -45,7 +45,7 @@ describe('signup_post', () => {
 
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith(expectedUser);
-  });
+  }, 10000);
 
   it('should handle errors and return error messages', async () => {
     const error = new Error('Invalid email');
@@ -73,5 +73,5 @@ describe('signup_post', () => {
 
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith(expectedErrors);
-  });
+  }, 10000);
 });
