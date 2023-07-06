@@ -1,4 +1,4 @@
-const User = require('../model/User');
+const User = require('./model/User');
 const {
   signup_post,
   logout_get,
@@ -6,7 +6,7 @@ const {
   getById,
   handleErrors,
   createToken,
-} = require('../controllers/userController');
+} = require('./controllers/userController');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { MongoClient } = require('mongodb');
 const { setupMockMongo } = require('jest-mock-mongodb');
