@@ -10,7 +10,7 @@ let db;
 
 describe('User Controller', () => {
   beforeAll(async () => {
-    const uri = await mongod.getConnectionString();
+    const uri = await mongod.getUri();
     connection = await MongoClient.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -22,7 +22,7 @@ describe('User Controller', () => {
     await connection.close();
     await mongod.stop();
   });
-  
+
   beforeEach(async () => {
     // Clear the users collection before each test
     await db.collection('users').deleteMany({});
