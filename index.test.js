@@ -1,29 +1,35 @@
 const { signup_post } = require('./controllers/userController');
 const User = require('./model/User');
 const {MongoClient} = require('mongodb');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 describe('Signup', () => {
 
   let connection;
   let db;
+  let mongoServer;
 
   beforeAll(async () => {
-    connection = await MongoClient.connect(global.__MONGO_URI__, {
+    mongoServer = new MongoMemoryServer();
+    const mongoUri = await mongoServer.getUri();
+
+    connection = await MongoClient.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    db = await connection.db();
+    db = connection.db();
   });
 
   afterAll(async () => {
     await connection.close();
+    await mongoServer.stop();
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Clear the user collection before each test
-    User.deleteMany({});
+    await db.collection('users').deleteMany({});
   });
-
+  
   it('should create a new user and return the user ID', async () => {
     const req = {
       body: {
