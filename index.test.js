@@ -6,26 +6,6 @@ const { MongoClient } = require('mongodb');
 // Create a new instance of MongoMemoryServer
 const mongod = new MongoMemoryServer();
 
-const handleErrors = (err) => {
-  let errors = { email: '', password: '', photo: '' };
-
-  if (err.message === 'verkeerde email') {
-    errors.email = 'Ingevoerde gegevens kloppen niet.';
-  }
-  if (err.message === 'verkeerde wachtwoord') {
-    errors.email = 'Ingevoerde gegevens kloppen niet.';
-  }
-  if (err.code === 11000) {
-    errors.email = 'Dit email adres heeft al een account bij ons';
-    return errors;
-  }
-  if (err.message.includes('user validation failed')) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
-    });
-  }
-  return errors;
-};
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
