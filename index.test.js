@@ -10,8 +10,9 @@ describe('Signup', () => {
   let mongoServer;
 
   beforeAll(async () => {
-    mongoServer = new MongoMemoryServer();
-    const mongoUri = await mongoServer.getUri();
+    mongoServer = await MongoMemoryServer.create();
+
+    const mongoUri = mongoServer.getUri();
 
     connection = await MongoClient.connect(mongoUri, {
       useNewUrlParser: true,
@@ -29,7 +30,7 @@ describe('Signup', () => {
     // Clear the user collection before each test
     await db.collection('users').deleteMany({});
   });
-  
+
   it('should create a new user and return the user ID', async () => {
     const req = {
       body: {
