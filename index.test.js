@@ -5,10 +5,24 @@ const { MongoClient } = require('mongodb');
 
 // Create a new instance of MongoMemoryServer
 const mongod = new MongoMemoryServer();
-
+let db;
 
 
 describe('User Controller', () => {
+  beforeAll(async () => {
+    const uri = await mongod.getConnectionString();
+    connection = await MongoClient.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = connection.db(); // Assign the connection's database to db variable
+  });
+
+  afterAll(async () => {
+    await connection.close();
+    await mongod.stop();
+  });
+  
   beforeEach(async () => {
     // Clear the users collection before each test
     await db.collection('users').deleteMany({});
