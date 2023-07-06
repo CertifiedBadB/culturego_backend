@@ -1,103 +1,227 @@
-const { signup_post } = require('./controllers/userController');
-const { MongoClient } = require('mongodb');
+const User = require('../model/User');
+const {
+  signup_post,
+  logout_get,
+  login_post,
+  getById,
+  handleErrors,
+  createToken,
+} = require('../controllers/userController');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MongoClient } = require('mongodb');
+const { setupMockMongo } = require('jest-mock-mongodb');
 
-describe('signup_post', () => {
-   let connection;
-   let db;
- 
-   let req;
-   let res;
- 
-   let mongod;
- //hi
-   beforeAll(async () => {
-     mongod = await MongoMemoryServer.create();
-     const uri = mongod.getUri();
-     connection = await MongoClient.connect(uri, {
-       useNewUrlParser: true,
-       useUnifiedTopology: true,
-     });
-     db = connection.db();
-   });
- 
-   afterAll(async () => {
-     if (connection) {
-       await connection.close();
-     }
-     if (mongod) {
-       await mongod.stop();
-     }
-   });
+describe('User Controller', () => {
+  let connection;
+  let db;
 
-   beforeEach(() => {
-    req = {
-      body: {
-        email: 'dummy@dummy.nl',
-        password: '123@12OO'
-      }
-    };
-    res = {
-      status: jest.fn(() => res),
-      json: jest.fn()
-    };
+  const mongod = new MongoMemoryServer();
+
+  beforeAll(async () => {
+    await setupMockMongo(mongod);
+    const uri = await mongod.getUri();
+    connection = await MongoClient.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = await connection.db();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  afterAll(async () => {
+    await connection.close();
+    await mongod.stop();
   });
 
-  it('should create a user and return a token', async () => {
-    const createToken = jest.fn().mockReturnValue('dummy-token');
-    const User = {
-      create: jest.fn().mockResolvedValue({ _id: 'some-user-id' })
-    };
+  describe('signup_post', () => {
+    it('should create a user and return the user ID', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password',
+          photo: 'photo-url',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-    const expectedUser = { user: 'some-user-id' };
+      await signup_post(req, res);
 
-    await signup_post(req, res);
+      const createdUser = await db.collection('users').findOne({ email: 'test@example.com' });
 
-    expect(User.create).toHaveBeenCalledTimes(1);
-    expect(User.create).toHaveBeenCalledWith({
-      email: 'dummy@dummy.nl',
-      password: '123@12OO'
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({ user: createdUser._id.toString() });
+      expect(createdUser.email).toBe('test@example.com');
+      expect(createdUser.password).toBe('password');
+      expect(createdUser.photo).toBe('photo-url');
     });
 
-    expect(createToken).toHaveBeenCalledTimes(1);
-    expect(createToken).toHaveBeenCalledWith('some-user-id');
+    it('should handle errors and return error messages', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password',
+          photo: 'photo-url',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-    expect(res.status).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(201);
+      // Simulate an error by passing an existing email address
+      await db.collection('users').insertOne({ email: 'test@example.com' });
 
-    expect(res.json).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith(expectedUser);
-  }, 10000);
+      await signup_post(req, res);
 
-  it('should handle errors and return error messages', async () => {
-    const error = new Error('Invalid email');
-    const handleErrors = jest.fn().mockReturnValue(['Invalid email']);
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        email: 'Dit email adres heeft al een account bij ons',
+      });
+    });
+  });
 
-    const User = {
-      create: jest.fn().mockRejectedValue(error)
-    };
+  describe('logout_get', () => {
+    it('should clear the JWT cookie', () => {
+      const res = {
+        clearCookie: jest.fn(),
+      };
 
-    const expectedErrors = ['Invalid email'];
+      logout_get({}, res);
 
-    await signup_post(req, res);
+      expect(res.clearCookie).toHaveBeenCalledWith('jwt');
+    });
+  });
 
-    expect(User.create).toHaveBeenCalledTimes(1);
-    expect(User.create).toHaveBeenCalledWith({
-      email: 'dummy@dummy.nl',
-      password: '123@12OO'
+  describe('login_post', () => {
+    it('should authenticate the user and return the user ID and token', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Create a test user
+      const createdUser = await db.collection('users').insertOne({
+        email: 'test@example.com',
+        password: 'password',
+      });
+
+      await login_post(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        user: createdUser._id.toString(),
+        token: expect.any(String),
+      });
     });
 
-    expect(handleErrors).toHaveBeenCalledTimes(1);
-    expect(handleErrors).toHaveBeenCalledWith(error);
+    it('should handle errors and return error messages', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'wrong-password',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-    expect(res.status).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(400);
+      await login_post(req, res);
 
-    expect(res.json).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith(expectedErrors);
-  }, 10000);
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ errors: { email: 'Ingevoerde gegevens kloppen niet.' } });
+    });
+  });
+
+  describe('getById', () => {
+    it('should return the user by ID if found', async () => {
+      // Create a test user
+      const createdUser = await db.collection('users').insertOne({
+        _id: 'test-user-id',
+        email: 'test@example.com',
+        password: 'password',
+      });
+
+      const req = {
+        body: {
+          id: 'test-user-id',
+        },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+
+      await getById(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(createdUser.ops[0]);
+    });
+
+    it('should return an error if the user is not found', async () => {
+      const req = {
+        body: {
+          id: 'nonexistent-user-id',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await getById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ error: 'User not found' });
+    });
+
+    it('should return an error if an internal server error occurs', async () => {
+      const req = {
+        body: {
+          id: 'test-user-id',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Simulate an internal server error by passing an invalid user ID
+      await getById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+    });
+  });
+  describe('handleErrors', () => {
+    it('should return appropriate error messages based on the error', () => {
+      const err1 = new Error('verkeerde email');
+      const err2 = new Error('verkeerde wachtwoord');
+      const err3 = { code: 11000 };
+      const err4 = new Error('user validation failed');
+      err4.errors = {
+        email: { properties: { path: 'email', message: 'Email is required' } },
+        password: { properties: { path: 'password', message: 'Password is required' } },
+      };
+
+      const errors1 = handleErrors(err1);
+      const errors2 = handleErrors(err2);
+      const errors3 = handleErrors(err3);
+      const errors4 = handleErrors(err4);
+
+      expect(errors1).toEqual({ email: 'Ingevoerde gegevens kloppen niet.' });
+      expect(errors2).toEqual({ email: 'Ingevoerde gegevens kloppen niet.' });
+      expect(errors3).toEqual({ email: 'Dit email adres heeft al een account bij ons' });
+      expect(errors4).toEqual({
+        email: 'Email is required',
+        password: 'Password is required',
+      });
+    });
+  });
 });
