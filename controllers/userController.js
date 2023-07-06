@@ -31,18 +31,17 @@ const createToken = (id) => {
 }
 
 
-module.exports.signup_post = async(req, res) => {
-    const {email, password, photo} = req.body;
-    try{
-        const user = await User.create({email, password, photo});
-        const token = createToken(user._id);
-        res.status(201).json({user: user._id})
+module.exports.signup_post = async (req, res) => {
+    const { email, password, photo } = req.body;
+    try {
+      const user = await User.create({ email, password, photo });
+      const token = createToken(user._id);
+      res.status(201).json({ user: user._id });
+    } catch (err) {
+      const errors = handleErrors(err);
+      res.status(400).json(errors);
     }
-    catch(err){
-        const errors = handleErrors(err);
-        res.status(400).json(errors);
-    }
-}
+  };
 
 module.exports.logout_get = (req, res) => {
     res.status('jwt','',{maxAge:1});
