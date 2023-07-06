@@ -11,7 +11,7 @@ describe('signup_post', () => {
   let req;
   let res;
 
- beforeAll(async () => {
+beforeAll(async () => {
     const uri = await mongod.getUri();
     connection = await MongoClient.connect(uri, {
       useNewUrlParser: true,
@@ -21,8 +21,12 @@ describe('signup_post', () => {
   });
 
   afterAll(async () => {
-    await connection.close();
-    await mongod.stop();
+    if (connection) {
+      await connection.close();
+    }
+    if (mongod) {
+      await mongod.stop();
+    }
   });
 
   it('should create a user and return a token', async () => {
