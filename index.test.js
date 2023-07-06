@@ -1,36 +1,39 @@
-const User = require('./model/User');
-const {
-  signup_post,
-  logout_get,
-  login_post,
-  getById,
-  handleErrors,
-  createToken,
-} = require('./controllers/userController');
+const { signup_post, logout_get, login_post, getById, handleErrors, createToken } = require('../controllers/userController');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { MongoClient } = require('mongodb');
-const { setupMockMongo } = require('jest-mock-mongodb');
+
+// Create a new instance of MongoMemoryServer
+const mongod = new MongoMemoryServer();
 
 describe('User Controller', () => {
   let connection;
   let db;
 
-  const mongod = new MongoMemoryServer();
-
   beforeAll(async () => {
-    await setupMockMongo(mongod);
+    // Start the in-memory MongoDB server
     const uri = await mongod.getUri();
     connection = await MongoClient.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    db = await connection.db();
+    db = connection.db();
   });
 
   afterAll(async () => {
+    // Close the MongoDB connection and stop the in-memory server
     await connection.close();
     await mongod.stop();
   });
+
+  // Rest of your test code..
+
+
+
+
+
+
+
+
 
   describe('signup_post', () => {
     it('should create a user and return the user ID', async () => {
