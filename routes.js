@@ -51,7 +51,8 @@ const checkToken = (req, res, next) => {
     };
 
 
-app.use('/users',userRoutes);
+app.use('/users/signup',userRoutes);
+app.use('/users/login',userRoutes);
 app.use('/users/getById',checkToken,userRoutes);
 app.use('/paths', checkToken,  pathRoutes);
 app.use('/points',checkToken,  pointRoutes);
