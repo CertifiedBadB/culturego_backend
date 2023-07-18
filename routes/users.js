@@ -84,11 +84,13 @@ router.post('/login', userController.login_post);
 
 /**
  * @swagger
- * /users/getById:
+ *  /users/getById:
  *  get:
  *      tags:
- *        - users (authorization)
- *      summary: Use this call to get a user by id
+ *        - users (needs autorization)
+ *      summary: Use this call to see a users details
+ *      security:
+ *          - Bearer: []
  *      requestBody:
  *          required: true
  *          content:
@@ -96,11 +98,14 @@ router.post('/login', userController.login_post);
  *                  schema:
  *                      type: object
  *                      properties:
- *                          id: String
- *
+ *                          id:
+ *                              type: string
+ *                              description: Title of the path
+ *                              example: "fddsf3dfs4gfds"
+ *                              required: true
  *      responses:
  *          200:
- *              description: Successful login
+ *              description: Successful checked a user
  *          400:
  *              description: Bad request
  *          401:
