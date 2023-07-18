@@ -85,7 +85,7 @@ router.post('/login', userController.login_post);
 /**
  * @swagger
  *  /users/getById:
- *  get:
+ *  post:
  *      tags:
  *        - users (needs autorization)
  *      summary: Use this call to see a users details
@@ -111,7 +111,7 @@ router.post('/login', userController.login_post);
  *          401:
  *              description: Unauthorized
  */
-router.get('/getById', userController.getById);
+router.post('/getById', userController.getById);
 
 router.get('/logout', userController.logout_get);
 module.exports = router;
