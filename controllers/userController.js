@@ -75,3 +75,43 @@ module.exports.getById = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+  module.exports.getByIdAndUpdatePoints = async (req, res) => {
+    const { id, points } = req.body;
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Add the points to the user's current points
+      user.points += points;
+  
+      // Save the updated user to the database
+      await user.save();
+  
+      return res.json(user);
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  module.exports.getByEmailUpdatePassword = async (req, res) => {
+    const { email, newPassword } = req.body;
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Update the user's password with the new password
+      user.password = newPassword;
+  
+      // Save the updated user to the database
+      await user.save();
+  
+      return res.json(user);
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };

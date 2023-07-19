@@ -112,5 +112,41 @@ router.post('/login', userController.login_post);
  */
 router.post('/getById',verifyToken, userController.getById);
 
+/**
+ * @swagger
+ *  /users/updatePoints:
+ *  post:
+ *      tags:
+ *        - users (needs autorization)
+ *      summary: Use this call to see a users details
+ *      security:
+ *          - Bearer: []
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          id:
+ *                              type: String
+ *                              description: Title of the path
+ *                              example: "fdsfi344lfgd"
+ *                              required: true
+ *                          points:
+ *                              type: int
+ *                              description: Title of the path
+ *                              example: 2
+ *                              required: true
+ *      responses:
+ *          200:
+ *              description: Successful checked a user
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              description: Unauthorized
+ */
+router.post('/updatePoints',verifyToken, userController.getByIdAndUpdatePoints);
+
 router.get('/logout', userController.logout_get);
 module.exports = router;
