@@ -47,7 +47,7 @@ module.exports.signup_post = async (req, res) => {
 
 module.exports.logout_get = (req, res) => {
     res.status('jwt','',{maxAge:1});
-}
+};
 
 
 module.exports.login_post = async(req, res) => {
@@ -61,7 +61,7 @@ module.exports.login_post = async(req, res) => {
         const errors = handleErrors(err);
         res.status(400).json({errors});
     }
-}
+};
 
 module.exports.getById = async (req, res) => {
     const { id } = req.body;
@@ -85,8 +85,8 @@ module.exports.getById = async (req, res) => {
       }
   
       // Add the points to the user's current points
-      const p = user.points + points;
-      user.points = p;
+      user.points += points;
+  
       // Save the updated user to the database
       await user.save();
   
@@ -95,23 +95,3 @@ module.exports.getById = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
-
-  module.exports.getByEmailUpdatePassword = async (req, res) => {
-  const { email, newPassword } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Update the user's password with the new password
-    user.password = newPassword;
-
-    // Save the updated user to the database
-    await user.save();
-
-    return res.json(user);
-  } catch (err) {
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-};
