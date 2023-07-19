@@ -85,7 +85,7 @@ module.exports.getById = async (req, res) => {
       }
   
       // Add the points to the user's current points
-      user.points += points;
+      user.points = points + user.points;
   
       // Save the updated user to the database
       await user.save();
