@@ -1,5 +1,4 @@
 const express = require("express");
-const authorize = require("../routes")
 const router = express.Router();
 const Path = require("../model/Path");
 const User = require("../model/User");
