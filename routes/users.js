@@ -5,7 +5,7 @@ const User = require("../model/User");
 const userController = require("../controllers/userController");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
-const { checkToken } = require('../routes');
+const verifyToken = require('../verifyToken');
 
 
 /**
@@ -110,7 +110,7 @@ router.post('/login', userController.login_post);
  *          401:
  *              description: Unauthorized
  */
-router.post('/getById',checkToken, userController.getById);
+router.post('/getById',verifyToken, userController.getById);
 
 router.get('/logout', userController.logout_get);
 module.exports = router;
