@@ -51,10 +51,10 @@ const checkToken = (req, res, next) => {
     };
 
 
-// First, define the routes that require token authentication
-app.use('/users', userRoutes); 
-app.use('/paths', checkToken, pathRoutes);
-app.use('/points', checkToken, pointRoutes);
+app.use('/users',userRoutes);
+app.use('/paths', checkToken,  pathRoutes);
+app.use('/points',checkToken,  pointRoutes);
+//first route
 
 app.get('/',(req,res) =>{
     res.send("hello world :)")
