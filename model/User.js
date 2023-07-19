@@ -21,6 +21,10 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    points:{
+        type: Number,
+        default: 0
+    },
     collectedPointsInPath:[{
         path: {type: mongoose.Schema.Types.ObjectId, ref: 'Path', required: true},
         point:[{type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true}]
