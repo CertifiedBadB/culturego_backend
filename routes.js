@@ -11,7 +11,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 app.use(express.json());
 app.use(cookieParser());
-const verifyToken = require('../verifyToken');
+const verifyToken = require('./verifyToken');
 
 
 const options = {
