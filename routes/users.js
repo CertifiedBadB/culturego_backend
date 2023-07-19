@@ -6,7 +6,7 @@ const User = require("../model/User");
 const userController = require("../controllers/userController");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
-const { checkToken } = require('./app');
+const { checkToken } = require('../routes');
 
 
 /**
