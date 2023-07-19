@@ -78,7 +78,6 @@ module.exports.getById = async (req, res) => {
 
   module.exports.getByIdAndUpdatePoints = async (req, res) => {
     const { id, points } = req.body;
-    const p;
     try {
       const user = await User.findById(id);
       if (!user) {
