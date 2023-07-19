@@ -52,14 +52,9 @@ const checkToken = (req, res, next) => {
 
 
 // First, define the routes that require token authentication
-app.use('/users/getById', checkToken, userRoutes);
+app.use('/users/getById', checkToken, userRoutes); 
 app.use('/paths', checkToken, pathRoutes);
 app.use('/points', checkToken, pointRoutes);
-
-// Then, define the routes that do not require token authentication
-app.use('/users/signup', userRoutes);
-app.use('/users/login', userRoutes);
-//first route
 
 app.get('/',(req,res) =>{
     res.send("hello world :)")
