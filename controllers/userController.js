@@ -45,9 +45,7 @@ module.exports.signup_post = async (req, res) => {
     }
   };
 
-module.exports.logout_get = (req, res) => {
-    res.status('jwt','',{maxAge:1});
-};
+
 
 
 module.exports.login_post = async(req, res) => {
@@ -55,7 +53,7 @@ module.exports.login_post = async(req, res) => {
     try{
         const user = await User.login(email,password);
         const token = createToken(user._id);
-        res.status(200).json({user:user._id , token: token,points:user.points});
+        res.status(200).json({user:user._id , token: token, points:user.points});
     }
     catch(err){
         const errors = handleErrors(err);
@@ -63,33 +61,37 @@ module.exports.login_post = async(req, res) => {
     }
 };
 
-module.exports.getById = async (req, res) => {
+
+
+module.exports.getByIdAndUpdatePoints = async (req, res) => {
+  const { id, points } = req.body;
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id }, // Filter by user ID
+      { $inc: { points: points } }, // Update points using $inc to increment/decrement
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.json(updatedUser);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+  module.exports.logout_get = (req, res) => {
+    res.status('jwt','',{maxAge:1});
+};
+  module.exports.getById = async (req, res) => {
     const { id } = req.body;
     try {
       const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      return res.json(user);
-    } catch (err) {
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  };
-
-  module.exports.getByIdAndUpdatePoints = async (req, res) => {
-    const { id, points } = req.body;
-    try {
-      const user = await User.findById(id);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      // Add the points to the user's current points
-      user.points += points;
-  
-      // Save the updated user to the database
-      await user.save();
-  
       return res.json(user);
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
