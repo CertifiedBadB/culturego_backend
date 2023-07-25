@@ -14,6 +14,11 @@ const UserSchema = mongoose.Schema({
         required: [true, "Je bent vergeten een wachtwoord in te vullen"],
         minlength: [5,"Zorg dat het wachtwoord minimaal 5 tekens bevat"]
     },
+    points:{
+        type: Number,
+        required:true,
+        default: 0,
+    },
     photo:{
         type: String
     },
@@ -21,10 +26,7 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    points:{
-        type: Number,
-        default: 0
-    },
+   
     collectedPointsInPath:[{
         path: {type: mongoose.Schema.Types.ObjectId, ref: 'Path', required: true},
         point:[{type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true}]
