@@ -5,6 +5,7 @@ const MailingController = require('./mailingController')
 
 module.exports.transaction_post = async(req, res) => {
     const { user,pascode } = req.body;
+    
     try {
         const userGet = await User.findById(user);
         if (!userGet) {
@@ -23,14 +24,14 @@ module.exports.transaction_post = async(req, res) => {
                   );
                 await transaction.save();
                 MailingController.transaction_postmail();
-                res.send(transaction);
+                return res.send(transaction);
 
               } catch (err) {
-                res.status(400).send(err);
+                return res.status(400).send(err);
               }
         }
     }catch (err) {
-        res.status(400).send(err);
+        return res.status(400).send(err);
       }
     };
 
