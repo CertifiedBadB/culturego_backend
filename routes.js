@@ -2,6 +2,7 @@
 const pathRoutes = require('./routes/path')
 const pointRoutes = require('./routes/point')
 const userRoutes = require('./routes/users')
+const transactionRoutes = require('./routes/transaction')
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
@@ -23,7 +24,7 @@ const options = {
             version: '3.0.0'
         },
     },
-    apis: ['routes/users.js','routes/point.js','routes/path.js']
+    apis: ['routes/users.js','routes/point.js','routes/path.js','routes/transaction.js']
 }
 
 
@@ -36,6 +37,7 @@ app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSpec));
 app.use('/users',userRoutes);
 app.use('/paths', verifyToken,  pathRoutes);
 app.use('/points',verifyToken,  pointRoutes);
+app.use('/transaction',verifyToken,transactionRoutes)
 //first route
 
 app.get('/',(req,res) =>{
