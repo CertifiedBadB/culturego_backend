@@ -1,6 +1,6 @@
 const Transaction = require ('../model/Transactions');
 const User = require ('../model/User');
-const {transaction_postMail} = require('./mailingController')
+const MailingController = require('./mailingController')
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 
@@ -25,7 +25,7 @@ module.exports.transaction_post = async(req, res) => {
                     { new: true } // Return the updated document
                   );
                 await transaction.save();
-                transaction_postMail();
+                MailingController.transaction_postmail();
                 res.send(transaction);
 
               } catch (err) {
