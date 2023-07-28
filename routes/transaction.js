@@ -1,16 +1,16 @@
 const express = require("express");
-
 const router = express.Router();
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
 const transactionController = require("../controllers/transactionController");
-const authorize = require("../routes")
-const app = express();
+
 
 /** 
  * @swagger
- *  /transaction/postTransaction:
+ *  /transactions/postTransaction:
  *  post:
  *      tags:
- *        - transaction (needs autorization)
+ *        - transactions (needs autorization)
  *      summary: Use this call to send points
  *      security:
  *          - Bearer: []

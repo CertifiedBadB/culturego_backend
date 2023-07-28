@@ -1,6 +1,8 @@
 const Transaction = require ('../model/Transactions');
 const User = require ('../model/User');
 const {transaction_postMail} = require('./mailingController')
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
 
 //dit is geen restfull, maar rpc remote procedure call
 //get: cashability checken, rest checken aangezien dit geen restfull calls zijn.
