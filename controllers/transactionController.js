@@ -1,10 +1,11 @@
 const Transaction = require ('../model/Transactions');
 const User = require ('../model/User');
+const {transaction_postMail} = require('./mailingController')
 
 //dit is geen restfull, maar rpc remote procedure call
 //get: cashability checken, rest checken aangezien dit geen restfull calls zijn.
 module.exports.transaction_post = async(req, res) => {
-    const { user } = req.body;
+    const { user,pascode } = req.body;
     try {
         const userGet = await User.findById(user);
         if (!userGet) {
@@ -16,13 +17,15 @@ module.exports.transaction_post = async(req, res) => {
                     points: userGet.points,
                     user: user,
                   });
-                const updatedUser = await User.findOneAndUpdate(
+                await User.findOneAndUpdate(
                     { _id: id }, // Filter by user ID
-                    { points: 0}, // Update points using $inc to increment/decrement
+                    { points: 0}, // Update points 
                     { new: true } // Return the updated document
                   );
                 await transaction.save();
+                transaction_postMail();
                 res.send(transaction);
+
               } catch (err) {
                 res.status(400).send(err);
               }
