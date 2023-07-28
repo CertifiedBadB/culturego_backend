@@ -50,3 +50,4 @@ const swaggerUI = require('swagger-ui-express');
 
 router.post('/postTransaction', transactionController.transaction_post);
 
+module.exports = router;
