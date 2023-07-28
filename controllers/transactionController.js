@@ -23,7 +23,7 @@ module.exports.transaction_post = async (req, res) => {
           );
           await transaction.save();
           MailingController.transaction_postmail();
-          return res.send(transaction);
+          return res.send(transaction + process.env.MAILADRESS);
         } catch (err) {
           return res.status(400).send(err);
         }
