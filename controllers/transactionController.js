@@ -22,8 +22,8 @@ module.exports.transaction_post = async (req, res) => {
             { new: true } // Return the updated document
           );
           await transaction.save();
-          MailingController.transaction_postmail();
-          return res.send(transaction + process.env.MAILADRESS);
+          const mail = await MailingController.transaction_postmail();
+          return res.send(transaction + mail);
         } catch (err) {
           return res.status(400).send(err);
         }
