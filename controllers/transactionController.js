@@ -1,11 +1,8 @@
-const Transaction = require ('../model/Transactions');
+const Transaction = require ('../model/Transaction');
 const User = require ('../model/User');
 const MailingController = require('./mailingController')
-const jwt = require('jsonwebtoken');
-const axios = require('axios');
 
-//dit is geen restfull, maar rpc remote procedure call
-//get: cashability checken, rest checken aangezien dit geen restfull calls zijn.
+
 module.exports.transaction_post = async(req, res) => {
     const { user,pascode } = req.body;
     try {
@@ -35,7 +32,9 @@ module.exports.transaction_post = async(req, res) => {
     }catch (err) {
         res.status(400).send(err);
       }
-    }
+    };
+
+
 
 
 

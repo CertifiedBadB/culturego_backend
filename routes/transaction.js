@@ -1,10 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const transactionController = require("../controllers/transactionController");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
-const transactionController = require("../controllers/transactionController");
 
 
+/** 
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *      Bearer:
+ *          type: http
+ *          scheme: bearer
+ * 
 /** 
  * @swagger
  *  /transactions/postTransaction:
@@ -41,3 +49,4 @@ const transactionController = require("../controllers/transactionController");
  */
 
 router.post('/postTransaction', transactionController.transaction_post);
+

@@ -32,12 +32,11 @@ const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSpec));
 
 
-
-
 app.use('/users', userRoutes);
+app.use('/transactions',verifyToken, transactionRoutes);
 app.use('/paths', verifyToken,  pathRoutes);
 app.use('/points',verifyToken,  pointRoutes);
-app.use('/transactions',verifyToken, transactionRoutes);
+
 //first route
 
 app.get('/',(req,res) =>{

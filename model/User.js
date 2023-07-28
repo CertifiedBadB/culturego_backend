@@ -62,4 +62,4 @@ UserSchema.statics.login = async function(email,password){
     throw Error('verkeerde email');
 }
 
-module.exports = mongoose.model("user",UserSchema);
+module.exports = mongoose.model("User",UserSchema);
