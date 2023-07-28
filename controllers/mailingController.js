@@ -9,14 +9,14 @@ var transporter = nodemailer.createTransport({
     }
     });
 
-module.exports.transaction_postmail = () => {
+module.exports.transaction_postmail = async() => {
     var mailOptions = {
         from: process.env.MAILADRESS,
         to: process.env.MAILADRESS,
         subject: 'Sending Email using Node.js',
         text: 'That was easy!'
       }
-    transporter.sendMail(mailOptions, function(error, info){
+    await transporter.sendMail(mailOptions, function(error, info){
     if (error) {
         return error;
     } else {
