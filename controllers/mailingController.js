@@ -26,17 +26,40 @@ module.exports.transaction_postmail = async (mailadress, punten, transactie,pasc
     const mailOptions2 = {
         from: process.env.MAILADRESS,
         to: process.env.MAILADRESS,
-        subject: 'Puntentransactie ' + transactie,
-        text:
-        'TransactieId: ' + transactie +
-        "\n\nPunten: " + punten +
-        "\n\nPasnummer: " + pascode +
-        "\n\nEmail: " + mailadress,
-      };
+        subject: 'Puntentransactie CG ' + transactie,
+        html: `
+    <h2>Transactie Details:</h2>
+    <p><strong>TransactieId:</strong> ${transactie}</p>
+    <p><strong>Punten:</strong> ${punten}</p>
+    <p><strong>Pasnummer:</strong> ${pascode}</p>
+    <p><strong>Email:</strong> ${mailadress}</p>
+  `,
+};
 
     const info = await transporter.sendMail(mailOptions2);
-    return 'Email sent: ' + info.response;
+    const info2 = await transporter.sendMail(mailOptions);
+    return 'Email sent: ' + info.response + info2.response;
   } catch (error) {
     return error;
   }
 };
+
+module.exports.welcome_postmail = async (mailadress) => {
+    try {
+      // Read the HTML template from the "assets" folder
+      const templatePath = path.join(__dirname, '../mails/welcome.html');
+      const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+  
+      const mailOptions = {
+        from: process.env.MAILADRESS,
+        to: mailadress,
+        subject: 'Welkom',
+        html: htmlTemplate, // Use the HTML template
+      };
+  
+      const info2 = await transporter.sendMail(mailOptions);
+      return 'Email sent: ' + info2.response;
+    } catch (error) {
+      return error;
+    }
+  };

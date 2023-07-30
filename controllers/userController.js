@@ -1,6 +1,7 @@
 const User = require("../model/User");
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
+const MailingController = require('./mailingController')
 //handleerrors
 const handleErrors= (err) =>{
     let errors = {email: '', password: '', photo: ''}
@@ -36,6 +37,7 @@ module.exports.signup_post = async (req, res) => {
     try {
       const user = await User.create({ email, password, photo });
       const token = createToken(user._id);
+      await MailingController.transaction_postmail(email);
       res.status(201).json({ user: user._id });
     } catch (err) {
       console.error('Error:', err); // Add this line for logging
