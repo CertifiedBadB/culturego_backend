@@ -21,8 +21,8 @@ module.exports.transaction_post = async (req, res) => {
             { points: 0 }, // Update points
             { new: true } // Return the updated document
           );
-          await transaction.save();
-          const mail = await MailingController.transaction_postmail();
+          const t = await transaction.save();
+          const mail = await MailingController.transaction_postmail(userGet.email, userGet.points,t._id,pascode );
           return res.send(transaction + mail);
         } catch (err) {
           return res.status(400).send(err);
