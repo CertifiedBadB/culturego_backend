@@ -13,7 +13,7 @@ var transporter = nodemailer.createTransport({
 module.exports.transaction_postmail = async () => {
   try {
     // Read the HTML template from the "assets" folder
-    const templatePath = path.join(__dirname, 'mails', 'puntenoverzetten.html');
+    const templatePath = path.join(__dirname, '../mails/puntenoverzetten.html');
     const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
     const mailOptions = {
