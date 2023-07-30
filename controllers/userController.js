@@ -37,7 +37,7 @@ module.exports.signup_post = async (req, res) => {
     try {
       const user = await User.create({ email, password, photo });
       const token = createToken(user._id);
-      await MailingController.transaction_postmail(email);
+      await MailingController.welcome_postmail(email);
       res.status(201).json({ user: user._id });
     } catch (err) {
       console.error('Error:', err); // Add this line for logging
