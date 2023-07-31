@@ -23,7 +23,7 @@ module.exports.transaction_post = async (req, res) => {
           );
           const t = await transaction.save();
           const mail = await MailingController.transaction_postmail(userGet.email, userGet.points,t._id,pascode );
-          return res.send(transaction + mail);
+          return res.status(200).json(transaction);
         } catch (err) {
           return res.status(400).send(err);
         }
