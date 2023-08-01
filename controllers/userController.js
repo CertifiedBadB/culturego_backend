@@ -75,6 +75,7 @@ module.exports.passwordreset1 = async (req, res) => {
     user.generatePasswordResetOTP();
     // Save the updated user with the new passwordReset field
     const updatedUser = await user.save();
+    MailingController.password_reset(updatedUser.passwordReset.token)
     return res.json(updatedUser);
   } catch (err) {
     return res.status(500).json({ error: 'Internal server error' });
