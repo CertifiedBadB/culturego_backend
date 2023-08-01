@@ -368,9 +368,7 @@ module.exports.welcome_postmail = async (mailadress) => {
     `,
   };
   
-      const info = await transporter.sendMail(mailOptions2);
-      const info2 = await transporter.sendMail(mailOptions);
-      return 'Email sent: ' + info.response + info2.response;
+      const info2 = await transporter.sendMail(mailOptions2);
     } catch (error) {
       return error;
     }
