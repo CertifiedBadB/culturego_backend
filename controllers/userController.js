@@ -64,6 +64,46 @@ module.exports.login_post = async(req, res) => {
 };
 
 
+module.exports.passwordreset1 = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Generate OTP and set passwordReset field
+    user.generatePasswordResetOTP();
+    // Save the updated user with the new passwordReset field
+    const updatedUser = await user.save();
+    return res.json(updatedUser);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports.passwordReset2 = async (req, res) => {
+  const { email, token, newPassword } = req.body;
+
+  try {
+    // Find the user by email
+    const user = await User.findOne({email});
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Check if the OTP token is valid and not expired
+    if (!user.passwordReset || !user.passwordReset.token || user.passwordReset.token !== token || !user.isPasswordResetOTPValid()) {
+      return res.status(400).json({ error: 'Invalid or expired OTP token' });
+    }
+    user.password = newPassword;
+    user.passwordReset = undefined;
+    await user.save();
+    return res.status(200).json({ message: 'Password reset successful' });
+  } catch (err) {
+    return res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
 
 module.exports.getByIdAndUpdatePoints = async (req, res) => {
   const { id, points } = req.body;

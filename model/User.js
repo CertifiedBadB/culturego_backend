@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const {isEmail} =require("validator");
 const bcrypt = require('bcrypt');
+const otpGenerator = require('otp-generator');
 const UserSchema = mongoose.Schema({
     email:{
         type: String,
@@ -26,11 +27,17 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-   
     collectedPointsInPath:[{
         path: {type: mongoose.Schema.Types.ObjectId, ref: 'Path', required: true},
         point:[{type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true}]
     }],
+    passwordReset: {
+        token: {
+          type: String,
+          unique: true,
+        },
+        expires: Date,
+      },
     userCreated :{
         type: String,
         default: Date.now
@@ -49,6 +56,17 @@ UserSchema.pre('save', async function(next){
     console.log('user about to be created',this)
     next();
 })
+
+// Method to generate and set the password reset token
+UserSchema.methods.generatePasswordResetOTP = function () {
+    const otp = otpGenerator.generate(6, { digits: true, upperCase: false, specialChars: false, alphabets: false });
+    const expirationTime = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+  
+    this.passwordReset = {
+      token: otp,
+      expires: expirationTime,
+    };
+  };
 
 UserSchema.statics.login = async function(email,password){
     const user = await this.findOne({email});
