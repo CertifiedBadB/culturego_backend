@@ -64,7 +64,7 @@ module.exports.login_post = async(req, res) => {
 };
 
 
-module.exports.passwordreset1 = async (req, res) => {
+module.exports.passwordReset1 = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });

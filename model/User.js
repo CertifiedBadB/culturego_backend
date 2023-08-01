@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const {isEmail} =require("validator");
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
+const cron = require('node-cron');
 const UserSchema = mongoose.Schema({
     email:{
         type: String,
@@ -67,6 +68,23 @@ UserSchema.methods.generatePasswordResetOTP = function () {
       expires: expirationTime,
     };
   };
+
+  // Method to check if the OTP is valid (not expired)
+UserSchema.methods.isPasswordResetOTPValid = function () {
+    return this.passwordReset.expires > Date.now();
+  };
+  
+  // Background task to delete expired OTPs
+  const deleteExpiredOTPs = async () => {
+    const expiredUsers = await User.find({ 'passwordReset.expires': { $lt: Date.now() } });
+    for (const user of expiredUsers) {
+      user.passwordReset = undefined;
+      await user.save();
+    }
+  };
+  
+  // Schedule the deleteExpiredOTPs task to run every minute
+  cron.schedule('* * * * *', deleteExpiredOTPs);
 
 UserSchema.statics.login = async function(email,password){
     const user = await this.findOne({email});

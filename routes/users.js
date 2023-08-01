@@ -176,7 +176,7 @@ router.post('/updatePoints',verifyToken, userController.getByIdAndUpdatePoints);
  *          401:
  *              description: Unauthorized
  */
-router.post('/passwordreset1', userController.passwordreset1);
+router.post('/passwordreset1', userController.passwordReset1);
 
 /**
  * @swagger
@@ -216,7 +216,7 @@ router.post('/passwordreset1', userController.passwordreset1);
  *          401:
  *              description: Unauthorized
  */
-router.post('/passwordreset2', userController.passwordreset2);
+router.post('/passwordreset2', userController.passwordReset2);
 
 router.get('/logout', userController.logout_get);
 module.exports = router;
