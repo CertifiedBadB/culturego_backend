@@ -33,7 +33,7 @@ app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSpec));
 
 
 app.use('/users', userRoutes);
-app.use('/transactions',verifyToken, transactionRoutes);
+app.use('/transactions',verifyToken,  transactionRoutes);
 app.use('/paths', verifyToken,  pathRoutes);
 app.use('/points',verifyToken,  pointRoutes);
 

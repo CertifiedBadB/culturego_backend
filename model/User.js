@@ -35,7 +35,7 @@ const UserSchema = mongoose.Schema({
     passwordReset: {
         token: {
           type: String,
-          unique: true,
+          sparse: true,
         },
         expires: Date,
       },
