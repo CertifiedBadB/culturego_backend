@@ -36,7 +36,6 @@ const UserSchema = mongoose.Schema({
     passwordReset: {
         token: {
             type: String,
-            default: null,
             sparse: true,
         },
         expires: {type: Date, default: null}
@@ -90,6 +89,9 @@ const deleteExpiredOTPs = async () => {
         await user.save();
     }
 };
+
+// Schedule the deleteExpiredOTPs task to run every minute
+cron.schedule('* * * * *', deleteExpiredOTPs);
 
 UserSchema.statics.login = async function (email, password) {
     const user = await this.findOne({ email });
