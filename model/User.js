@@ -34,6 +34,7 @@ const UserSchema = mongoose.Schema({
     }],
     passwordReset: {
         token: {
+            default:null,
           type: String,
           sparse: true,
         },
