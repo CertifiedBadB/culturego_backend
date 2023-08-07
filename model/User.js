@@ -91,9 +91,6 @@ const deleteExpiredOTPs = async () => {
     }
 };
 
-// Schedule the deleteExpiredOTPs task to run every minute
-cron.schedule('* * * * *', deleteExpiredOTPs);
-
 UserSchema.statics.login = async function (email, password) {
     const user = await this.findOne({ email });
     if (user) {
