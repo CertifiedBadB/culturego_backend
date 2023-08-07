@@ -37,7 +37,6 @@ const UserSchema = mongoose.Schema({
         token: {
             type: String,
             default: null,
-            unique: true,
             sparse: true,
         },
         expires: Date,
