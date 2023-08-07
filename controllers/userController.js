@@ -33,19 +33,18 @@ const createToken = (id) => {
 
 
 module.exports.signup_post = async (req, res) => {
-    const { email, password, photo } = req.body;
-    try {
-      const user = await User.create({ email, password, photo });
-      const token = createToken(user._id);
-      await MailingController.welcome_postmail(email);
-      res.status(201).json({ user: user._id });
-    } catch (err) {
-      console.error('Error:', err); // Add this line for logging
-      const errors = handleErrors(err);
-      console.error('Errors:', errors); // Add this line for logging
-      res.status(400).json(errors);
-    }
-  };
+  const { email, password, photo } = req.body;
+  try {
+    const user = await User.create({ email, password, photo });
+    const token = createToken(user._id);
+    await MailingController.welcome_postmail(email);
+    res.status(201).json({ user: user._id });
+  } catch (err) {
+    console.error('Error:', err);
+    const errors = handleErrors(err);
+    res.status(400).json(errors);
+  }
+};
 
 
 
@@ -71,12 +70,13 @@ module.exports.passwordReset1 = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    // Generate OTP and set passwordReset field
-    user.generatePasswordResetOTP();
-    // Save the updated user with the new passwordReset field
-    const updatedUser = await user.save();
-    MailingController.password_reset(email, updatedUser.passwordReset.token)
-    return res.json(updatedUser);
+    // Check if the user already has a password reset token
+    if (!user.passwordReset || !user.passwordReset.token) {
+      user.generatePasswordResetOTP();
+      const updatedUser = await user.save();
+      MailingController.password_reset(email, updatedUser.passwordReset.token);
+    }
+    return res.json({ message: 'Password reset token sent' });
   } catch (err) {
     return res.status(500).json({ error: 'Internal server error' });
   }
