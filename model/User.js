@@ -34,12 +34,13 @@ const UserSchema = mongoose.Schema({
         point: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true }]
     }],
     passwordReset: {
+        default: null,
         token: {
             type: String,
             default: null,
             sparse: true,
         },
-        expires: Date,
+        expires: {type: Date, default: null}
     },
     userCreated: {
         type: String,
