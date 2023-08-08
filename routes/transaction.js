@@ -18,7 +18,7 @@ const swaggerUI = require('swagger-ui-express');
  *  /transactions/postTransaction:
  *  post:
  *      tags:
- *        - transactions (needs autorization)
+ *        - transactions (needs authorization)
  *      summary: Use this call to send points
  *      security:
  *          - Bearer: []

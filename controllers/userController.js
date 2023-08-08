@@ -63,7 +63,7 @@ module.exports.login_post = async(req, res) => {
 };
 
 
-module.exports.passwordReset1 = async (req, res) => {
+module.exports.passwordRequest = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -84,7 +84,7 @@ module.exports.passwordReset1 = async (req, res) => {
   }
 };
 
-module.exports.passwordReset2 = async (req, res) => {
+module.exports.passwordReset = async (req, res) => {
   const { email, token, newPassword } = req.body;
 
   try {

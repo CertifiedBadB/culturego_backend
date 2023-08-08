@@ -12,7 +12,7 @@ const app = express();
  *  /points/generateRandomPath:
  *  post:
  *      tags:
- *        - points (needs autorization)
+ *        - points (needs authorization)
  *      summary: Use this call to get value amount of points, based on your location in latitude and longtitude
  *      security:
  *          - Bearer: []
@@ -52,10 +52,10 @@ router.post('/generateRandomPath', pointController.point_get);
 
 /**
  * @swagger
- *  /points/dummydata:
+ *  /points/dummyData:
  *  post:
  *      tags: 
- *        - points (needs autorization)
+ *        - points (needs authorization)
  *      summary: Use this call to add some dummydata to the database
  *      requestBody:
  *          required: false

@@ -86,7 +86,7 @@ router.post('/login', userController.login_post);
  *  /users/getById:
  *  post:
  *      tags:
- *        - users (needs autorization)
+ *        - users (needs authorization)
  *      summary: Use this call to see a users details
  *      security:
  *          - Bearer: []
@@ -117,7 +117,7 @@ router.post('/getById',verifyToken, userController.getById);
  *  /users/updatePoints:
  *  post:
  *      tags:
- *        - users (needs autorization)
+ *        - users (needs authorization)
  *      summary: Use this call to see a users details
  *      security:
  *          - Bearer: []
@@ -150,7 +150,7 @@ router.post('/updatePoints',verifyToken, userController.getByIdAndUpdatePoints);
 
 /**
  * @swagger
- * /users/passwordreset1:
+ * /users/requestPasswordReset:
  *  post:
  *      tags:
  *        - users (authorization)
@@ -176,11 +176,11 @@ router.post('/updatePoints',verifyToken, userController.getByIdAndUpdatePoints);
  *          401:
  *              description: Unauthorized
  */
-router.post('/passwordreset1', userController.passwordReset1);
+router.post('/requestPasswordReset', userController.passwordRequest);
 
 /**
  * @swagger
- * /users/passwordreset2:
+ * /users/passwordReset:
  *  post:
  *      tags:
  *        - users (authorization)
@@ -216,7 +216,7 @@ router.post('/passwordreset1', userController.passwordReset1);
  *          401:
  *              description: Unauthorized
  */
-router.post('/passwordreset2', userController.passwordReset2);
+router.post('/passwordReset', userController.passwordReset);
 
 router.get('/logout', userController.logout_get);
 module.exports = router;
