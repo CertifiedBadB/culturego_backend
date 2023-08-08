@@ -34,6 +34,7 @@ const UserSchema = mongoose.Schema({
         point: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true }]
     }],
     passwordReset: {
+        unique: false,
         token: {
             type: String,
             sparse: true,
