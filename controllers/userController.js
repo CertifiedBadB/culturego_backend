@@ -15,7 +15,7 @@ const handleErrors = (err) => {
   // Check for duplicate email error
   if (err.code === 11000 && err.keyPattern && err.keyPattern.email === 1) {
     errors.email = 'Dit email adres heeft al een account bij ons';
-    return errors;
+    return err;
   }
   // Validate errors
   if (err.message.includes('user validation failed')) {
@@ -23,7 +23,7 @@ const handleErrors = (err) => {
       errors[properties.path] = properties.message;
     });
   }
-  return errors;
+  return err;
 };
 
 const maxAge = 3 * 24 * 60 * 60;
@@ -75,6 +75,8 @@ module.exports.passwordReset1 = async (req, res) => {
       user.generatePasswordResetOTP();
       const updatedUser = await user.save();
       MailingController.password_reset(email, updatedUser.passwordReset.token);
+    } else {
+      return res.json({ message: 'Password reset token already exists' });
     }
     return res.json({ message: 'Password reset token sent' });
   } catch (err) {

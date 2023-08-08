@@ -38,7 +38,7 @@ const UserSchema = mongoose.Schema({
             type: String,
             sparse: true,
         },
-        expires: {type: Date, default: null}
+        expires: Date
     },
     userCreated: {
         type: String,
