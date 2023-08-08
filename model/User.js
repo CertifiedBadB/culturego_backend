@@ -34,10 +34,8 @@ const UserSchema = mongoose.Schema({
         point: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Point', required: true }]
     }],
     passwordReset: {
-        unique: false,
         token: {
             type: String,
-            sparse: true,
         },
         expires: Date
     },
@@ -72,27 +70,6 @@ UserSchema.methods.generatePasswordResetOTP = function () {
 UserSchema.methods.isPasswordResetOTPValid = function () {
     return this.passwordReset && this.passwordReset.expires > Date.now();  // Check if passwordReset exists before checking expiration
 };
-
-// Background task to delete expired OTPs
-const deleteExpiredOTPs = async () => {
-    const expiredUsers = await User.find({
-        $and: [
-            { 'passwordReset.token': { $ne: null } }, // Check if token exists
-            { 'passwordReset.expires': { $lt: Date.now() } }
-        ]
-    });
-
-    for (const user of expiredUsers) {
-        user.passwordReset = {
-            token: null,
-            expires: null,
-        };
-        await user.save();
-    }
-};
-
-// Schedule the deleteExpiredOTPs task to run every minute
-cron.schedule('* * * * *', deleteExpiredOTPs);
 
 UserSchema.statics.login = async function (email, password) {
     const user = await this.findOne({ email });
